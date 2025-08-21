@@ -1,0 +1,19 @@
+.HootFeedPage {
+  display: flex;
+  min-height: 100vh;
+  background-color: #e6f0ff; // light blue background
+  font-family: Arial, sans-serif;
+
+  aside {
+    width: 220px;
+    background-color: #ffffff;
+    border-right: 1px solid #cce0ff;
+    padding: 1rem;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+  }
+
+  .feed {
+    flex: 1;
+    padding: 1.5rem;
+  }
+}

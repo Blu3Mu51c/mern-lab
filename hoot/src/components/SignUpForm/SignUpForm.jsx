@@ -1,62 +1,57 @@
-import { Component } from "react";
+import { useState } from 'react';
+import styles from './SignUpForm.module.scss';
 import { signUp } from '../../utilities/users-service';
 
-export default class SignUpForm extends Component {
-state = {
-  name: '',
-  email: '',
-  password: '',
-  confirm: '',
-  error: ''
-};
+export default function SignUpForm({ setUser }) {
+  const [formData, setFormData] = useState({ name: '', email: '', password: '' });
+  const [error, setError] = useState('');
 
-handleChange = (evt) => {
-  this.setState({
-    [evt.target.name]: evt.target.value,
-    error: ''
-  });
-};
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setError('');
+  };
 
-handleSubmit = async (evt) => {
-  evt.preventDefault();
-  try {
-    const formData = {...this.state};
-    delete formData.confirm;
-    delete formData.error;
-    // The promise returned by the signUp service method
-    // will resolve to the user object included in the
-    // payload of the JSON Web Token (JWT)
-    const user = await signUp(formData);
-    // Baby step
-    this.props.setUser(user);
-  } catch {
-    // An error happened on the server
-    this.setState({ error: 'Sign Up Failed - Try Again' });
-  }
-};
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const user = await signUp(formData);
+      setUser(user);
+    } catch {
+      setError('Failed to sign up');
+    }
+  };
 
-// We must override the render method
-// The render method is the equivalent to a function-based component
-// (its job is to return the UI)
-render() {
-  const disable = this.state.password !== this.state.confirm;
   return (
-    <div>
-      <div className="form-container">
-        <form autoComplete="off" onSubmit={this.handleSubmit}>
-          <label>Name</label>
-          <input type="text" name="name" value={this.state.name} onChange={this.handleChange} required />
-          <label>Email</label>
-          <input type="email" name="email" value={this.state.email} onChange={this.handleChange} required />
-          <label>Password</label>
-          <input type="password" name="password" value={this.state.password} onChange={this.handleChange} required />
-          <label>Confirm</label>
-          <input type="password" name="confirm" value={this.state.confirm} onChange={this.handleChange} required />
-          <button type="submit" disabled={disable}>SIGN UP</button>
-        </form>
-      </div>
-      <p className="error-message">&nbsp;{this.state.error}</p>
-    </div>
+    <form className={styles.form} onSubmit={handleSubmit}>
+      <input
+        className={styles.input}
+        type="text"
+        name="name"
+        placeholder="Name"
+        value={formData.name}
+        onChange={handleChange}
+        required
+      />
+      <input
+        className={styles.input}
+        type="email"
+        name="email"
+        placeholder="Email"
+        value={formData.email}
+        onChange={handleChange}
+        required
+      />
+      <input
+        className={styles.input}
+        type="password"
+        name="password"
+        placeholder="Password"
+        value={formData.password}
+        onChange={handleChange}
+        required
+      />
+      {error && <div className={styles.error}>{error}</div>}
+      <button type="submit" className={styles.button}>Sign Up</button>
+    </form>
   );
-}
 }

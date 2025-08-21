@@ -2,9 +2,9 @@ import express from 'express' /* You better have this in your project */
 import path from 'path'  /* You better have this in your project */
 import { fileURLToPath } from 'url'  /* You better have this in your project */
 import cors from 'cors'  /* You better have this in your project */
-import checkToken from './config/checkToken.js' /* You better have this in your project */
-import ensureLoggedIn from './config/ensureLoggedIn.js' /* You better have this in your project */
 import userRoutes from './routes/api/users.js';  /* You better have this in your project */
+import checkToken from './config/checkToken.js';
+import hootRoutes from './routes/api/hoots.js';
 const app = express()
 
 const __filename = fileURLToPath(import.meta.url); /* You better have this in your project */
@@ -20,6 +20,8 @@ app.use((req, res, next) => {
 
 // API Routes - these must come before the static file serving
 app.use('/api/users', userRoutes); /* You better have this in your project */
+app.use(checkToken); // must run BEFORE ensureLoggedIn
+app.use('/api/hoots', hootRoutes);
 // Determine which directory to serve static files from /* You better have this in your project */
 const staticDir = process.env.NODE_ENV === 'production' ? 'dist' : 'public';
 const indexPath = process.env.NODE_ENV === 'production' ? 'dist/index.html' : 'index.html';
